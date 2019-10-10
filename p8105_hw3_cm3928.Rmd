@@ -59,27 +59,26 @@ num_aisle =
 num_aisle
 ```
 
-There are 134 aisles 
-
 
 ```{r}
 items_ord = 
   instacart %>% 
-  group_by(aisle, add_to_cart_order) %>% 
-  summarize(n = n())
-```
-
-
-```{r}
-tab = 
-  items_ord %>% 
-  count() %>% 
+  group_by(aisle) %>% 
+  summarize(n = n()) %>% 
   arrange(-n)
 ```
 
 ```{r}
-kable(tab, markdown)
+kable(items_ord, markdown)
 ```
+
+There are 134 aisles and fresh vegetables is the most popular aisle with 150609 items ordered from it.
+
+
+
+
+
+
 
 
 
