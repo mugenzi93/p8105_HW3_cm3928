@@ -10,7 +10,7 @@ output: github_document
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(viridis)
-library(leaflet)
+library(skimr)
 knitr::opts_chunk$set(
 	echo = TRUE,
 	warning = FALSE,
@@ -33,34 +33,57 @@ data(instacart)
 head(instacart)
 ```
 
+## A brief description of the dataset
 
 The instacart dataset is comprised of **`r ncol(instacart)`** variables and **`r nrow(instacart)`** observations.
 
+** I am going to group_by and summarize character variables.  
+
+```{r}
+doyou = 
+  instacart %>% 
+  group_by(product_name, department) %>% 
+  summarise(n = n())
+view(doyou)
+```
 
 
 
+**How many aisles are there, and which aisles are the most items ordered from?**
+
+```{r}
+num_aisle = 
+  instacart %>% 
+  count(aisle) %>% 
+  summarise(n = n())
+num_aisle
+```
+
+There are 134 aisles 
+
+
+```{r}
+items_ord = 
+  instacart %>% 
+  group_by(aisle, add_to_cart_order) %>% 
+  summarize(n = n())
+```
+
+
+```{r}
+tab = 
+  items_ord %>% 
+  count() %>% 
+  arrange(-n)
+```
+
+```{r}
+kable(tab, markdown)
+```
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+**Make a plot that shows the number of items ordered in each aisle, limiting this to aisles with more than 10000 items ordered. Arrange aisles sensibly, and organize your plot so others can read it.**
 
 
 
