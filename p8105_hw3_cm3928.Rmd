@@ -76,15 +76,16 @@ There are 134 aisles and fresh vegetables is the most popular aisle with 150609 
 
 
 
-
-
-
-
-
-
 **Make a plot that shows the number of items ordered in each aisle, limiting this to aisles with more than 10000 items ordered. Arrange aisles sensibly, and organize your plot so others can read it.**
 
 
+```{r}
+plot = 
+  items_ord %>%
+  filter(n > 10000) %>% 
+  ggplot(aes(x = n, y = aisle)) + geom_point()
+plot
+```
 
 
 
