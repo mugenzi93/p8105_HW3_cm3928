@@ -30,7 +30,7 @@ theme_set(theme_minimal() + theme(legend.position = "bottom"))
 ```{r}
 library(p8105.datasets)
 data(instacart)
-head(instacart)
+janitor::clean_names(instacart)
 ```
 
 ## A brief description of the dataset
@@ -64,8 +64,9 @@ num_aisle
 items_ord = 
   instacart %>% 
   group_by(aisle) %>% 
-  summarize(n = n()) %>% 
-  arrange(-n)
+  summarize(items_ordered = n()) %>% 
+  arrange(-items_ordered)
+view(items_ord)
 ```
 
 ```{r}
@@ -82,12 +83,45 @@ There are 134 aisles and fresh vegetables is the most popular aisle with 150609 
 ```{r}
 plot = 
   items_ord %>%
-  filter(n > 10000) %>% 
-  ggplot(aes(x = n, y = aisle)) + geom_point()
+  filter(items_ordered > 10000) %>% 
+  ggplot(aes(x = items_ordered, y = aisle)) + 
+  geom_point() +
+  labs(
+     x = "Number of items ordered") +
+  scale_x_continuous(
+    breaks = c(25000, 50000, 75000, 100000, 125000, 150000)
+  )
 plot
 ```
 
 
+**Make a table showing the three most popular items in each of the aisles “baking ingredients”, “dog food care”, and “packaged vegetables fruits”. Include the number of times each item is ordered in your table.**
+
+```{r}
+tab = 
+  instacart %>% 
+  group_by(aisle, product_name) %>% 
+  filter(min_rank(desc(order_id)) < 4) %>% 
+  select(-c(product_id:days_since_prior_order), 
+         -department_id, -aisle_id) %>% 
+  summarise(order_id = n()) %>%
+  filter(aisle == "dog food care")
+view(tab)
+```
+
+
+
+**Make a table showing the mean hour of the day at which Pink Lady Apples and Coffee Ice Cream are ordered on each day of the week; format this table for human readers (i.e. produce a 2 x 7 table).**
+
+```{r}
+pat3 = 
+  instacart %>% 
+  group_by(product_name, order_hour_of_day) %>% 
+  filter(product_name == "Pink Lady Apples") %>% 
+  select(-c(product_id:days_since_prior_order), 
+         -department_id, -aisle_id) 
+view(pat3)
+```
 
 
 
