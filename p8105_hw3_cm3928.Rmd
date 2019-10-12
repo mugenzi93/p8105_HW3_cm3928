@@ -131,18 +131,101 @@ knitr::kable(digits = 0)
 ```
 
 
+# Question 2
+
+
+
+First, let's read in the dataset.
+
+```{r}
+library(p8105.datasets)
+data(brfss_smart2010)
+```
+
+**Cleaning the dataset**
+
+
+**First, do some data cleaning:**
+
+**format the data to use appropriate variable names;**
+**focus on the “Overall Health” topic**
+**include only responses from “Excellent” to “Poor”**
+**organize responses as a factor taking levels ordered from “Poor” to “Excellent”**
+
+I also renamed the **locationabbr** to **states.** and **locationdesc** to **counties.**
+
+```{r}
+new_brfss_smart2010 = 
+  brfss_smart2010 %>% 
+  janitor::clean_names() %>%
+  rename(states = "locationabbr", counties = "locationdesc") %>% 
+  filter(topic == "Overall Health", 
+         response == c("Poor", "Fair or Poor Health", "Fair",
+                       "Good or Better Health", "Good",
+                       "Very Good", "Excellent"))
+view(new_brfss_smart2010)
+```
 
 
 
 
 
+```{r}
+what_states_02 = 
+  new_brfss_smart2010 %>% 
+  mutate(
+    pop_02 = case_when(
+      counties >= 7 ~ "popular_02")) %>% 
+  filter(year == "2002") %>% 
+  janitor::tabyl(states, pop_02)
+what_states_02
+```
+
+The state that was observed at 7 or more locations in the year 2002 was:
+**Washington State.**
+
+```{r}
+what_states_10 = 
+  new_brfss_smart2010 %>% 
+  mutate(
+    pop_10 = case_when(
+      counties >= 7 ~ "popular_10")) %>% 
+  filter(year == "2010") %>% 
+  janitor::tabyl(states, pop_10)
+what_states_10
+```
+
+States that were observed at 7 or more locations in the year 2010 were:
+**Colorado, Florida, Massachusetts, Maryland, Texas, Vermont, Washington.**
 
 
+Construct a dataset that is limited to Excellent responses, and contains, year, state, and a variable that averages the data_value across locations within a state. 
 
 
+```{r}
+spaghetti_df = 
+  new_brfss_smart2010 %>%
+  group_by(year) %>% 
+  filter(response == "Excellent") %>%
+  mutate(
+    mean_value = mean(data_value, na.rm = T)) %>%
+  select(year, states, mean_value)
+```
 
 
+```{r}
+kable(spaghetti_df, markdown)
+```
 
+Make a “spaghetti” plot of this average value over time within a state (that is, make a plot showing a line for each state across years – the geom_line geometry and group aesthetic will help).
+
+```{r}
+spaghetti_plot = 
+  spaghetti_df %>%
+  ggplot(aes(x = year, y = mean_value, color = year)) +
+  geom_line()
+spaghetti_plot
+```
 
 
 
