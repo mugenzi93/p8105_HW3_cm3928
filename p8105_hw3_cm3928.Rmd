@@ -116,7 +116,7 @@ There are 134 aisles and fresh vegetables is the most popular aisle with 150609 
   pivot_wider(
     names_from = order_dow,
     values_from = mean_hour) %>% 
-knitr::kable(digits = 0)
+knitr::kable(digits = 1)
 ```
 
 
@@ -170,7 +170,7 @@ In 2002, which states were observed at 7 or more locations? What about in 2010?
 ```
 
 The states that were observed at 7 or more locations in the year 2002 was:
-**Connecticut, Florida, Massachusetts, North Carolina, New Jersey, and pennsylvania.**
+**Connecticut, Florida, Massachusetts, North Carolina, New Jersey, and Pennsylvania.**
 
 ```{r}
   new_brfss_smart2010 %>%
@@ -216,7 +216,6 @@ spaghetti_plot =
 spaghetti_plot
 ```
 
-
 Make a two-panel plot showing, for the years 2006, and 2010, distribution of data_value for responses (“Poor” to “Excellent”) among locations in NY State.
 
 
@@ -235,8 +234,14 @@ panel_plot
 
 # Question 3
 
-I will load the dataset and start tidying it.
 
+**Load, tidy, and otherwise wrangle the data. Your final dataset should include all originally observed variables and values; have useful variable names; include a weekday vs weekend variable; and encode data with reasonable variable classes. Describe the resulting dataset (e.g. what variables exist, how many observations, etc).**
+
+```{r}
+accel_df = 
+  read_csv("accel_data.csv") %>% 
+  janitor::clean_names() %>% view()
+```
 
 
 
