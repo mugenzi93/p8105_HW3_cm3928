@@ -24,7 +24,7 @@ options(
 )
 scale_colour_discrete = scale_colour_viridis_d
 scale_fill_discrete = scale_fill_viridis_d
-theme_set(theme_minimal() + theme(legend.position = "bottom"))
+theme_set(theme_minimal() + theme(legend.position = "right"))
 ```
 
 
@@ -144,14 +144,6 @@ data(brfss_smart2010)
 
 **Cleaning the dataset**
 
-
-**First, do some data cleaning:**
-
-**format the data to use appropriate variable names;**
-**focus on the “Overall Health” topic**
-**include only responses from “Excellent” to “Poor”**
-**organize responses as a factor taking levels ordered from “Poor” to “Excellent”**
-
 I also renamed the **locationabbr** to **states.** and **locationdesc** to **counties.**
 
 ```{r}
@@ -160,43 +152,45 @@ new_brfss_smart2010 =
   janitor::clean_names() %>%
   rename(states = "locationabbr", counties = "locationdesc") %>% 
   filter(topic == "Overall Health", 
-         response == c("Poor", "Fair or Poor Health", "Fair",
+         response %in% c("Poor", "Fair or Poor Health", "Fair",
                        "Good or Better Health", "Good",
-                       "Very Good", "Excellent"))
+                       "Very good", "Excellent"))
 view(new_brfss_smart2010)
 ```
 
 
 
-
+In 2002, which states were observed at 7 or more locations? What about in 2010?
 
 ```{r}
-what_states_02 = 
-  new_brfss_smart2010 %>% 
-  mutate(
-    pop_02 = case_when(
-      counties >= 7 ~ "popular_02")) %>% 
-  filter(year == "2002") %>% 
-  janitor::tabyl(states, pop_02)
-what_states_02
+  new_brfss_smart2010 %>%
+  filter(year == "2002") %>%
+  group_by(states) %>%
+  distinct(counties) %>%
+  summarise(
+    location_02 = n()
+  ) %>%
+  filter(location_02 >= 7) %>% 
+  knitr::kable()
 ```
 
-The state that was observed at 7 or more locations in the year 2002 was:
-**Washington State.**
+The states that were observed at 7 or more locations in the year 2002 was:
+**Connecticut, Florida, Massachusetts, North Carolina, New Jersey, and pennsylvania.**
 
 ```{r}
-what_states_10 = 
-  new_brfss_smart2010 %>% 
-  mutate(
-    pop_10 = case_when(
-      counties >= 7 ~ "popular_10")) %>% 
-  filter(year == "2010") %>% 
-  janitor::tabyl(states, pop_10)
-what_states_10
+  new_brfss_smart2010 %>%
+  filter(year == "2010") %>%
+  group_by(states) %>%
+  distinct(counties) %>%
+  summarise(
+    location_10 = n()
+  ) %>%
+  filter(location_10 >= 7) %>% 
+  knitr::kable()
 ```
 
 States that were observed at 7 or more locations in the year 2010 were:
-**Colorado, Florida, Massachusetts, Maryland, Texas, Vermont, Washington.**
+**California, Colorado, Florida, Massachusetts, Maryland, North Carolina, Nebraska, New Jersey, New York, Ohio, Pennsylvania, South Carolina, Texas, Washington.**
 
 
 Construct a dataset that is limited to Excellent responses, and contains, year, state, and a variable that averages the data_value across locations within a state. 
@@ -205,11 +199,11 @@ Construct a dataset that is limited to Excellent responses, and contains, year, 
 ```{r}
 spaghetti_df = 
   new_brfss_smart2010 %>%
-  group_by(year) %>% 
+  select(year, states, response, data_value) %>%
   filter(response == "Excellent") %>%
-  mutate(
-    mean_value = mean(data_value, na.rm = T)) %>%
-  select(year, states, mean_value)
+  group_by(year, states) %>% 
+  summarise(
+    mean_value = mean(data_value, na.rm = T))
 ```
 
 
@@ -223,7 +217,7 @@ Make a “spaghetti” plot of this average value over time within a state (that
 spaghetti_plot = 
   spaghetti_df %>%
   ggplot(aes(x = year, y = mean_value, color = year)) +
-  geom_line()
+  geom_line(aes(color = states))
 spaghetti_plot
 ```
 
@@ -234,13 +228,54 @@ Make a two-panel plot showing, for the years 2006, and 2010, distribution of dat
 ```{r}
 panel_plot = 
   new_brfss_smart2010 %>% 
-  filter(response == c("Poor", "Fair", "Good", "Excellent"), 
-         year == c("2006", "2010")) %>% 
+  filter(response %in% c("Poor", "Very good", "Fair", "Good", "Excellent"), 
+         year %in% c("2006", "2010"), states == "NY") %>% 
   ggplot(aes(x = data_value, fill = response)) +
   geom_density(alpha = 0.5) +
   facet_grid(~year)
 panel_plot
 ```
+
+
+
+# Question 3
+
+I will load the dataset ans start tidying it.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
