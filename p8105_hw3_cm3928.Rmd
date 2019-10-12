@@ -84,23 +84,23 @@ There are 134 aisles and fresh vegetables is the most popular aisle with 150609 
     title = "Number of items ordered per aisle",
      x = "Number of items ordered") +
   scale_x_continuous(
-    breaks = c(25000, 75000, 100000, 150000))
+    breaks = c(25000, 75000, 150000))
 ```
 
 
 **Make a table showing the three most popular items in each of the aisles “baking ingredients”, “dog food care”, and “packaged vegetables fruits”. Include the number of times each item is ordered in your table.**
 
 ```{r}
-tab = 
   instacart %>% 
-  group_by(aisle, product_name) %>% 
-  filter(min_rank(desc(order_id)) < 4) %>% 
+  filter(aisle %in% c("baking ingredients", "dog food care", 
+                    "packaged vegetables fruits")) %>%
   select(-c(product_id:days_since_prior_order), 
-         -department_id, -aisle_id) %>% 
-  summarise(order_id = n()) %>%
-  filter(aisle == c("baking ingredients", "dog food care", 
-                    "packaged vegetable fruits"))
-view(tab)
+         -department_id, -aisle_id, -department) %>% 
+  group_by(aisle, product_name) %>% 
+  summarise(order_id = n()) %>% 
+  filter(min_rank(desc(order_id)) < 4) %>% 
+  arrange(desc(order_id)) %>% 
+  knitr::kable()
 ```
 
 
