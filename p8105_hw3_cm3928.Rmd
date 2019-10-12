@@ -228,9 +228,19 @@ spaghetti_plot
 ```
 
 
+Make a two-panel plot showing, for the years 2006, and 2010, distribution of data_value for responses (“Poor” to “Excellent”) among locations in NY State.
 
 
-
+```{r}
+panel_plot = 
+  new_brfss_smart2010 %>% 
+  filter(response == c("Poor", "Fair", "Good", "Excellent"), 
+         year == c("2006", "2010")) %>% 
+  ggplot(aes(x = data_value, fill = response)) +
+  geom_density(alpha = 0.5) +
+  facet_grid(~year)
+panel_plot
+```
 
 
 
