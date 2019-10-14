@@ -224,7 +224,7 @@ spaghetti_df =
 
 
 ```{r}
-kable(spaghetti_df, markdown)
+kable(head(spaghetti_df), markdown)
 ```
 
 **Make a “spaghetti” plot of this average value over time within a state (that is, make a plot showing a line for each state across years – the geom_line geometry and group aesthetic will help).**
@@ -302,10 +302,6 @@ accel_df =
   arrange(day)
 ```
 
-
-```{r}
-kable(head(accel_df), markdown)
-```
 
 
 **Description:** This new dataset is comprised of `r ncol(accel_df)` variables and `r nrow(accel_df)` observations. It has two numerical variables, **day_id** and **activity**; one character **day** variable, and three factor variables, **week, minute_of_day**, and **day_of_week.**
