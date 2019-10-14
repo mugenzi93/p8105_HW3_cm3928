@@ -140,7 +140,7 @@ The top selling products in aisles **packaged vegetables Fruits**, **baking ingr
 knitr::kable(digits = 1)
 ```
 
-Basing on this table, it looks like **Coffee Ice Cream** is mostly ordered around **3pm** on average whereas **Pink Lady Apples** is mostly ordered around **11am**, close to lunch hours.
+Based on this table, it looks like **Coffee Ice Cream** is mostly ordered around **3pm** on average whereas **Pink Lady Apples** is mostly ordered around **11am**, close to lunch hours.
 
 
 
@@ -351,7 +351,7 @@ accel_df %>%
 ```
 
 
-On average, this patient is consistent with their activities across the week. There are few outliers on Monday, Wednesday, and Sunday; but the median activity is about the same for each day of the week. These are low numbers and if i was threating this patient, I would suggest they start training physically to make sure their heart condition does not get worse.
+On average, this patient is consistent with their activities across the week. There are few outliers on Monday, Wednesday, and Sunday; but the median activity is about the same for each day of the week. These are low numbers and if i was treating this patient, I would suggest they start training physically to make sure their heart condition does not get worse.
 
 
 
