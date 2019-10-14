@@ -39,9 +39,10 @@ janitor::clean_names(instacart)
 
 ## A brief description of the dataset
 
-The instacart dataset is comprised of **`r ncol(instacart)`** variables and **`r nrow(instacart)`** observations.
+The instacart dataset is comprised of **`r ncol(instacart)`** variables and **`r nrow(instacart)`** observations. There are few important variables worth noting such as **aisle** wich represents the name of different aisles, **product_name** which is different names of products in the aisles, etc. Every observation in each row is product from an order and there is a single order per user.
 
-I am going to group_by and summarize character variables.
+
+## a. 
 
 **How many aisles are there, and which aisles are the most items ordered from?**
 
@@ -66,9 +67,9 @@ items_ord =
 kable(head(items_ord), markdown)
 ```
 
-There are 134 aisles and fresh vegetables is the most popular aisle with 150609 items ordered from it.
+There are **134** aisles and **fresh vegetables** is the most popular aisle with **150609** items ordered from it.
 
-
+## b.
 
 **Make a plot that shows the number of items ordered in each aisle, limiting this to aisles with more than 10000 items ordered. Arrange aisles sensibly, and organize your plot so others can read it.**
 
@@ -82,11 +83,17 @@ There are 134 aisles and fresh vegetables is the most popular aisle with 150609 
   geom_point(aes(color = aisle)) +
   labs(
     title = "Number of items ordered per aisle",
-     x = "Number of items ordered") +
+    x = "Number of items ordered",
+    y = "Aisle") +
   scale_x_continuous(
     breaks = c(25000, 75000, 150000))
 ```
 
+
+The resulting scatterplot shows an exponential increase in orders when aisles are ordered according to how popular they are with **fresh vegetables** and **fresh fruits** being the outliers with far more orders made from those two aisles. This is a sign that the community in which the grocery store is located is big on eating a healthy diet.
+
+
+## c. 
 
 **Make a table showing the three most popular items in each of the aisles “baking ingredients”, “dog food care”, and “packaged vegetables fruits”. Include the number of times each item is ordered in your table.**
 
@@ -103,12 +110,26 @@ There are 134 aisles and fresh vegetables is the most popular aisle with 150609 
   knitr::kable()
 ```
 
+The top selling products in aisles **packaged vegetables Fruits**, **baking ingredients**, **dog food care** are **organic baby spinach**, **light brown sugar**, and **snack sticks chicken & rice recipe dog treats** respectively. 
 
+
+
+## d.
 
 **Make a table showing the mean hour of the day at which Pink Lady Apples and Coffee Ice Cream are ordered on each day of the week; format this table for human readers (i.e. produce a 2 x 7 table).**
 
 ```{r}
   instacart %>% 
+  mutate(
+    order_dow = recode(order_dow, "0" = "Sunday", "1" = "Monday", 
+                       "2" = "Tuesday", "3" = "Wednesday", 
+                       "4" = "Thursday", "5" = "Friday", 
+                       "6" = "Saturday"), 
+    order_dow = factor(order_dow, levels = c("Monday", "Tuesday", 
+                                             "Wednesday", "Thursday", 
+                                             "Friday", "Saturday",
+                                             "Sunday"))) %>% 
+  arrange(order_dow) %>% 
   filter(product_name == c("Pink Lady Apples", "Coffee Ice Cream")) %>%
   group_by(order_dow, product_name) %>%
   summarise(
@@ -119,19 +140,19 @@ There are 134 aisles and fresh vegetables is the most popular aisle with 150609 
 knitr::kable(digits = 1)
 ```
 
+Basing on this table, it looks like **Coffee Ice Cream** is mostly ordered around **3pm** on average whereas **Pink Lady Apples** is mostly ordered around **11am**, close to lunch hours.
+
+
 
 # Question 2
 
-
-
-First, let's read in the dataset.
 
 ```{r}
 library(p8105.datasets)
 data(brfss_smart2010)
 ```
 
-** a. Cleaning the dataset**
+## a. 
 
 I renamed the **locationabbr** to **states.** and **locationdesc** to **counties.**
 
@@ -148,12 +169,11 @@ new_brfss_smart2010 =
     mutate(response = factor(response, levels = c("Poor", "Fair","Good",
                        "Very good", "Excellent"))) %>% 
   arrange(response)
-view(new_brfss_smart2010)
 ```
 
 
 
-**b.**
+## a.
 
 **In 2002, which states were observed at 7 or more locations? What about in 2010?**
 
@@ -187,6 +207,7 @@ The states that were observed at 7 or more locations in the year 2002 was:
 States that were observed at 7 or more locations in the year 2010 were:
 **California, Colorado, Florida, Massachusetts, Maryland, North Carolina, Nebraska, New Jersey, New York, Ohio, Pennsylvania, South Carolina, Texas, Washington.**
 
+## b.
 
 **Construct a dataset that is limited to Excellent responses, and contains, year, state, and a variable that averages the data_value across locations within a state.**
 
@@ -209,27 +230,38 @@ kable(spaghetti_df, markdown)
 **Make a “spaghetti” plot of this average value over time within a state (that is, make a plot showing a line for each state across years – the geom_line geometry and group aesthetic will help).**
 
 ```{r}
-spaghetti_plot = 
   spaghetti_df %>%
   ggplot(aes(x = year, y = mean_value, color = year)) +
-  geom_line(aes(color = states))
-spaghetti_plot
+  geom_line(aes(color = states)) +
+  labs(
+    title = "The Average data value across years",
+    x = "Year",
+    y = "Average Data Value")
 ```
+
+This spaghetti plot represents the average data value across time for all fifty states. I would say that the majority of states have average data values between 20 and 30. 
+
+
+## c.
+
 
 **Make a two-panel plot showing, for the years 2006, and 2010, distribution of data_value for responses (“Poor” to “Excellent”) among locations in NY State.**
 
 
 ```{r}
-panel_plot = 
   new_brfss_smart2010 %>% 
   filter(response %in% c("Poor", "Very good", "Fair", "Good", "Excellent"), 
          year %in% c("2006", "2010"), states == "NY") %>% 
   ggplot(aes(x = data_value, fill = response)) +
   geom_density(alpha = 0.5) +
-  facet_grid(~year)
-panel_plot
+  facet_grid(~year) +
+  labs(
+    title = "Distribution of Data Value for Years 2006 and 2010",
+    x = "Data Values in 2006 and 2010")
 ```
 
+
+For both 2006 and 2010, **Poor** was the majority of responses given by people living in New York and also had lower data values compared to other responses provided. The rest of the responses **Fair, Good, Very good, and Excellent** had about the same popularity as responses but with different data values. 
 
 
 # Question 3
@@ -262,7 +294,12 @@ accel_df =
                  "3" = "Wednesday", "4" = "Thursday",
                  "5" = "Friday", "6" = "Saturday",
                  "7" = "Sunday"),
-    day_of_week = factor(day_of_week, levels = c("weekday", "weekend")))
+    day_of_week = factor(day_of_week, levels = c("weekday", "weekend")),
+    day = factor(day, levels = c("Monday", "Tuesday", 
+                                             "Wednesday", "Thursday", 
+                                             "Friday", "Saturday",
+                                             "Sunday"))) %>%
+  arrange(day)
 ```
 
 
@@ -286,12 +323,16 @@ kable(head(accel_df), markdown)
   accel_df %>% 
   group_by(day_id, day, week) %>% 
   summarise(tot_act = sum(activity)) %>% 
+  arrange(day) %>% 
   pivot_wider(
     names_from = day,
     values_from = tot_act,
-    id_cols = c("week", "day")) %>% 
-  knitr::kable(digits = 1)
+    id_cols = c("week", "day")) %>%
+  knitr::kable(digits = 0)
 ```
+
+There is no apparent or significant pattern as we move within same days and down different weeks. The same logic applies as we move across weeks and different days, the total activity seems to increase and decrease with no definitive pattern.
+
 
 
 ## c.
@@ -302,11 +343,15 @@ kable(head(accel_df), markdown)
 ```{r}
 accel_df %>% 
   ggplot(aes(x = day, y = activity, color = day)) +
-  geom_boxplot()
+  geom_boxplot() +
+  labs(
+    title = "Boxplot of activity within Day of the Week",
+    x = "Day of Week",
+    y = "Activity")
 ```
 
 
-
+On average, this patient is consistent with their activities across the week. There are few outliers on Monday, Wednesday, and Sunday; but the median activity is about the same for each day of the week. These are low numbers and if i was threating this patient, I would suggest they start training physically to make sure their heart condition does not get worse.
 
 
 
