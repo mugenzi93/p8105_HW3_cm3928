@@ -272,7 +272,7 @@ For both 2006 and 2010, **Poor** was the majority of responses given by people l
 
 ```{r}
 accel_df = 
-  read_csv("accel_data.csv") %>% 
+  read_csv("data/accel_data.csv") %>% 
   janitor::clean_names() %>% 
   pivot_longer(
     activity_1:activity_1440,
