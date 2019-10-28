@@ -338,8 +338,8 @@ There is no apparent or significant pattern as we move within same days and down
 
 ```{r}
 accel_df %>% 
-  ggplot(aes(x = day, y = activity, color = day)) +
-  geom_boxplot() +
+  ggplot(aes(x = minute_of_day, y = activity, color = day)) +
+  geom_point() + geom_line() +
   labs(
     title = "Boxplot of activity within Day of the Week",
     x = "Day of Week",
