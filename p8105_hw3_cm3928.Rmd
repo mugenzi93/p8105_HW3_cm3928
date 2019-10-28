@@ -341,8 +341,8 @@ accel_df %>%
   ggplot(aes(x = minute_of_day, y = activity, color = day)) +
   geom_point() + geom_line() +
   labs(
-    title = "Boxplot of activity within Day of the Week",
-    x = "Day of Week",
+    title = "Scatterplot of activity within Every Minute",
+    x = "Minute of Day",
     y = "Activity")
 ```
 
